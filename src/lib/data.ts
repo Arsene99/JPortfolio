@@ -42,8 +42,8 @@ export interface Profile {
 export interface Contact {
   email: string;
   phone: string;
-  linkedin: string;
-  github: string;
+  facebook: string;
+  whatsapp: string;
   address: string;
 }
 
@@ -66,10 +66,10 @@ export const INITIAL_PROFILE: Profile = {
 };
 
 export const INITIAL_CONTACT: Contact = {
-  email: 'yabiarsene031@gmail.com',
+  email: 'mangnapejeanpaul60864840@gmail.com',
   phone: '+229 00 00 00 00',
-  linkedin: 'https://linkedin.com/in/jeanpaul',
-  github: 'https://github.com/jeanpaul',
+  facebook: 'https://facebook.com/jeanpaul',
+  whatsapp: 'https://wa.me/22900000000',
   address: 'Parakou, Bénin'
 };
 

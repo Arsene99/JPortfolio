@@ -1,12 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { Lock, Mail, ArrowLeft } from 'lucide-react';
+import { Lock, Mail, ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function Login() {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [showPassword, setShowPassword] = React.useState(false);
   const [error, setError] = React.useState('');
   const navigate = useNavigate();
 
@@ -21,7 +22,7 @@ export default function Login() {
     
     // Simple authentication logic for demonstration
     // In a real app, this would verify against a backend/Firebase
-    if (email === 'yabiarsene031@gmail.com' && password === 'admin123') {
+    if (email === 'mangnapejeanpaul60864840@gmail.com' && password === 'admin123') {
       localStorage.setItem('admin_auth', 'true');
       navigate('/admin');
     } else {
@@ -37,7 +38,7 @@ export default function Login() {
         className="max-w-md w-full bg-neutral-900 p-8 rounded-2xl border border-neutral-800 shadow-2xl"
       >
         <div className="text-center mb-8">
-          <div className="inline-flex p-3 bg-blue-500/10 rounded-full text-blue-500 mb-4">
+          <div className="inline-flex p-3 bg-emerald-500/10 rounded-full text-emerald-500 mb-4">
             <Lock size={32} />
           </div>
           <h1 className="text-2xl font-bold">Espace Administrateur</h1>
@@ -54,7 +55,7 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl focus:outline-none focus:border-emerald-500 transition-colors"
               placeholder="votre@email.com"
             />
           </div>
@@ -62,14 +63,23 @@ export default function Login() {
             <label className="text-sm font-medium text-neutral-300 flex items-center gap-2">
               <Lock size={16} /> Mot de passe
             </label>
-            <input 
-              type="password" 
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl focus:outline-none focus:border-blue-500 transition-colors"
-              placeholder="••••••••"
-            />
+            <div className="relative">
+              <input 
+                type={showPassword ? "text" : "password"} 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full px-4 py-3 bg-neutral-950 border border-neutral-800 rounded-xl focus:outline-none focus:border-emerald-500 transition-colors pr-12"
+                placeholder="••••••••"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-emerald-500 transition-colors p-1"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
 
           {error && (
@@ -84,7 +94,7 @@ export default function Login() {
 
           <button 
             type="submit"
-            className="w-full py-4 bg-blue-600 hover:bg-blue-700 rounded-xl font-bold transition-all shadow-lg shadow-blue-600/20"
+            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 rounded-xl font-bold transition-all shadow-lg shadow-emerald-600/20"
           >
             Se connecter
           </button>

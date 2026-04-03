@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Trash2, LayoutDashboard, Briefcase, Database, LogOut, ArrowLeft, Menu, X, BarChart3, FileText, User, Mail, Globe, Phone, MapPin, Pencil, Save } from 'lucide-react';
+import { Plus, Trash2, LayoutDashboard, Briefcase, Database, LogOut, ArrowLeft, Menu, X, BarChart3, FileText, User, Mail, Globe, Phone, MapPin, Pencil, Save, Facebook, MessageCircle, AlertTriangle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { usePortfolioData } from '../hooks/usePortfolioData';
 import { Project, Skill, Experience, Analysis, Profile, Contact } from '../lib/data';
@@ -14,11 +14,23 @@ export default function AdminDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const [saveStatus, setSaveStatus] = React.useState<string | null>(null);
   const [editingItem, setEditingItem] = React.useState<{ type: string, id: string } | null>(null);
+  const [confirmDelete, setConfirmDelete] = React.useState<{ type: string, id: string } | null>(null);
   const navigate = useNavigate();
 
   const showSaveConfirmation = (message: string) => {
     setSaveStatus(message);
     setTimeout(() => setSaveStatus(null), 3000);
+  };
+
+  const handleDelete = () => {
+    if (!confirmDelete) return;
+    const { type, id } = confirmDelete;
+    if (type === 'project') deleteProject(id);
+    else if (type === 'analysis') deleteAnalysis(id);
+    else if (type === 'skill') deleteSkill(id);
+    else if (type === 'experience') deleteExperience(id);
+    setConfirmDelete(null);
+    showSaveConfirmation('Élément supprimé');
   };
 
   const handleLogout = () => {
@@ -278,7 +290,7 @@ export default function AdminDashboard() {
                       <Pencil size={18} />
                     </button>
                     <button 
-                      onClick={() => { deleteProject(project.id); showSaveConfirmation('Projet supprimé'); }}
+                      onClick={() => setConfirmDelete({ type: 'project', id: project.id })}
                       className="p-2 text-neutral-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
                       title="Supprimer"
                     >
@@ -312,7 +324,7 @@ export default function AdminDashboard() {
                       <Pencil size={18} />
                     </button>
                     <button 
-                      onClick={() => { deleteAnalysis(analysis.id); showSaveConfirmation('Analyse supprimée'); }}
+                      onClick={() => setConfirmDelete({ type: 'analysis', id: analysis.id })}
                       className="p-2 text-neutral-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
                       title="Supprimer"
                     >
@@ -351,7 +363,7 @@ export default function AdminDashboard() {
                       <Pencil size={18} />
                     </button>
                     <button 
-                      onClick={() => { deleteSkill(skill.id); showSaveConfirmation('Compétence supprimée'); }}
+                      onClick={() => setConfirmDelete({ type: 'skill', id: skill.id })}
                       className="p-2 text-neutral-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
                       title="Supprimer"
                     >
@@ -385,7 +397,7 @@ export default function AdminDashboard() {
                       <Pencil size={18} />
                     </button>
                     <button 
-                      onClick={() => { deleteExperience(exp.id); showSaveConfirmation('Expérience supprimée'); }}
+                      onClick={() => setConfirmDelete({ type: 'experience', id: exp.id })}
                       className="p-2 text-neutral-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
                       title="Supprimer"
                     >
@@ -480,21 +492,21 @@ export default function AdminDashboard() {
                 </div>
                 <div className="space-y-3">
                   <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1 flex items-center gap-2">
-                    <Globe size={14} /> LinkedIn URL
+                    <Facebook size={14} /> Facebook URL
                   </label>
                   <input 
-                    value={contact.linkedin}
-                    onChange={(e) => updateContact({ ...contact, linkedin: e.target.value })}
+                    value={contact.facebook}
+                    onChange={(e) => updateContact({ ...contact, facebook: e.target.value })}
                     className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-4 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all"
                   />
                 </div>
                 <div className="space-y-3">
                   <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1 flex items-center gap-2">
-                    <BarChart3 size={14} /> GitHub/Données URL
+                    <MessageCircle size={14} /> WhatsApp URL
                   </label>
                   <input 
-                    value={contact.github}
-                    onChange={(e) => updateContact({ ...contact, github: e.target.value })}
+                    value={contact.whatsapp}
+                    onChange={(e) => updateContact({ ...contact, whatsapp: e.target.value })}
                     className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-4 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all"
                   />
                 </div>
@@ -521,6 +533,49 @@ export default function AdminDashboard() {
           )}
         </div>
       </main>
+
+      {/* Confirmation Modal */}
+      <AnimatePresence>
+        {confirmDelete && (
+          <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setConfirmDelete(null)}
+              className="absolute inset-0 bg-neutral-950/80 backdrop-blur-sm"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-md bg-neutral-900 border border-neutral-800 rounded-[32px] p-8 shadow-2xl"
+            >
+              <div className="flex items-center justify-center w-16 h-16 bg-red-500/10 rounded-2xl text-red-500 mb-6 mx-auto">
+                <AlertTriangle size={32} />
+              </div>
+              <h2 className="text-2xl font-bold text-center mb-2">Confirmation</h2>
+              <p className="text-neutral-400 text-center mb-8">
+                Êtes-vous sûr de vouloir supprimer cet élément ? Cette action est irréversible.
+              </p>
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => setConfirmDelete(null)}
+                  className="flex-1 py-4 bg-neutral-800 hover:bg-neutral-700 rounded-2xl font-bold transition-colors"
+                >
+                  Annuler
+                </button>
+                <button 
+                  onClick={handleDelete}
+                  className="flex-1 py-4 bg-red-500 hover:bg-red-600 text-white rounded-2xl font-bold transition-colors"
+                >
+                  Supprimer
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Edit Modal */}
       <AnimatePresence>

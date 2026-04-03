@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ChevronDown, BarChart3, Database, Linkedin, Briefcase } from 'lucide-react';
+import { ChevronDown, BarChart3, Database, Facebook, MessageCircle, Briefcase } from 'lucide-react';
 import { usePortfolioData } from '../hooks/usePortfolioData';
 import Layout from '../components/Layout';
 import { Link } from 'react-router-dom';
@@ -11,8 +11,74 @@ export default function About() {
   return (
     <Layout>
       {/* Hero Section */}
-      <section className="relative pt-20 pb-20 px-4 min-h-[80vh] flex items-center">
-        <div className="max-w-7xl mx-auto text-center z-10">
+      <section className="relative pt-20 pb-20 px-4 min-h-[80vh] flex items-center overflow-hidden">
+        {/* Background Animations */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.2, 1],
+              rotate: [0, 90, 0],
+              x: [0, 100, 0],
+              y: [0, 50, 0]
+            }}
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] bg-emerald-500/20 blur-[120px] rounded-full"
+          />
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.3, 1],
+              rotate: [0, -45, 0],
+              x: [0, -80, 0],
+              y: [0, -40, 0]
+            }}
+            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-emerald-400/15 blur-[100px] rounded-full"
+          />
+          <motion.div 
+            animate={{ 
+              opacity: [0.1, 0.3, 0.1],
+              scale: [0.8, 1.1, 0.8]
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-1/4 right-1/4 w-64 h-64 bg-emerald-600/10 blur-[80px] rounded-full"
+          />
+          
+          {/* Pulsing Grid Lines - Layer 1 */}
+          <motion.div 
+            animate={{ 
+              opacity: [0.05, 0.2, 0.05] 
+            }}
+            transition={{ 
+              duration: 5, 
+              repeat: Infinity, 
+              ease: "easeInOut" 
+            }}
+            className="absolute inset-0" 
+            style={{ 
+              backgroundImage: 'linear-gradient(to right, #10b981 1px, transparent 1px), linear-gradient(to bottom, #10b981 1px, transparent 1px)', 
+              backgroundSize: '60px 60px' 
+            }}
+          />
+          {/* Pulsing Grid Lines - Layer 2 (Offset) */}
+          <motion.div 
+            animate={{ 
+              opacity: [0, 0.1, 0] 
+            }}
+            transition={{ 
+              duration: 7, 
+              repeat: Infinity, 
+              ease: "easeInOut",
+              delay: 2.5
+            }}
+            className="absolute inset-0" 
+            style={{ 
+              backgroundImage: 'linear-gradient(to right, #10b981 1px, transparent 1px), linear-gradient(to bottom, #10b981 1px, transparent 1px)', 
+              backgroundSize: '120px 120px' 
+            }}
+          />
+        </div>
+
+        <div className="max-w-7xl mx-auto text-center z-10 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -33,11 +99,11 @@ export default function About() {
                 Voir mes travaux <ChevronDown size={18} className="group-hover:translate-y-1 transition-transform" />
               </Link>
               <div className="flex gap-3">
-                <a href={contact.github} target="_blank" rel="noopener noreferrer" className="p-3 bg-neutral-900 border border-neutral-800 rounded-xl hover:border-emerald-500/50 transition-all text-neutral-400 hover:text-emerald-400" title="Données">
-                  <Database size={20} />
+                <a href={contact.whatsapp} target="_blank" rel="noopener noreferrer" className="p-3 bg-neutral-900 border border-neutral-800 rounded-xl hover:border-emerald-500/50 transition-all text-neutral-400 hover:text-emerald-400" title="WhatsApp">
+                  <MessageCircle size={20} />
                 </a>
-                <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 bg-neutral-900 border border-neutral-800 rounded-xl hover:border-emerald-500/50 transition-all text-neutral-400 hover:text-emerald-400" title="LinkedIn">
-                  <Linkedin size={20} />
+                <a href={contact.facebook} target="_blank" rel="noopener noreferrer" className="p-3 bg-neutral-900 border border-neutral-800 rounded-xl hover:border-emerald-500/50 transition-all text-neutral-400 hover:text-emerald-400" title="Facebook">
+                  <Facebook size={20} />
                 </a>
               </div>
             </div>

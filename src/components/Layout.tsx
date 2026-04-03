@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Linkedin, Mail, Database, ChevronDown, BarChart3, MapPin, Phone } from 'lucide-react';
+import { Menu, X, Facebook, MessageCircle, Mail, Database, ChevronDown, BarChart3, MapPin, Phone } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { usePortfolioData } from '../hooks/usePortfolioData';
 
@@ -25,14 +25,50 @@ export default function Layout({ children }: LayoutProps) {
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans selection:bg-emerald-500/30 overflow-x-hidden">
-      {/* Grid Background Effect */}
-      <div className="fixed inset-0 z-0 opacity-10 pointer-events-none" 
-           style={{ backgroundImage: 'radial-gradient(#10b981 0.5px, transparent 0.5px)', backgroundSize: '24px 24px' }}>
-      </div>
+      {/* Pulsing Grid Background Effect */}
+      <motion.div 
+        animate={{ 
+          opacity: [0.05, 0.15, 0.05] 
+        }}
+        transition={{ 
+          duration: 8, 
+          repeat: Infinity, 
+          ease: "easeInOut" 
+        }}
+        className="fixed inset-0 z-0 pointer-events-none" 
+        style={{ 
+          backgroundImage: 'radial-gradient(#10b981 0.5px, transparent 0.5px)', 
+          backgroundSize: '24px 24px' 
+        }}
+      />
 
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-50 bg-neutral-950/80 backdrop-blur-md border-b border-neutral-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="fixed top-0 w-full z-50 bg-neutral-950/80 backdrop-blur-md border-b border-neutral-800 overflow-hidden">
+        {/* Header Background Animations */}
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.4, 1],
+              opacity: [0.2, 0.4, 0.2],
+              x: [0, 80, 0],
+              y: [0, -30, 0]
+            }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute -top-1/2 -left-1/4 w-full h-[200%] bg-emerald-500/20 blur-[80px] rounded-full"
+          />
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.8, 1],
+              opacity: [0.1, 0.3, 0.1],
+              x: [0, -50, 0],
+              y: [0, 60, 0]
+            }}
+            transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute -bottom-1/2 -right-1/4 w-full h-[200%] bg-emerald-400/20 blur-[100px] rounded-full"
+          />
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex justify-between h-16 items-center">
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
@@ -136,15 +172,31 @@ export default function Layout({ children }: LayoutProps) {
               </div>
             </div>
             
-            <div className="flex gap-8">
-              <a href={contact.github} target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-emerald-500 transition-colors flex items-center gap-2 font-bold">
-                <Database size={20} /> Données
+            <div className="flex gap-4">
+              <a 
+                href={contact.whatsapp} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-12 h-12 flex items-center justify-center bg-neutral-900 border border-neutral-800 rounded-2xl text-neutral-400 hover:text-emerald-500 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all shadow-lg"
+                title="WhatsApp"
+              >
+                <MessageCircle size={22} />
               </a>
-              <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-emerald-500 transition-colors flex items-center gap-2 font-bold">
-                <Linkedin size={20} /> LinkedIn
+              <a 
+                href={contact.facebook} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-12 h-12 flex items-center justify-center bg-neutral-900 border border-neutral-800 rounded-2xl text-neutral-400 hover:text-emerald-500 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all shadow-lg"
+                title="Facebook"
+              >
+                <Facebook size={22} />
               </a>
-              <a href={`mailto:${contact.email}`} className="text-neutral-400 hover:text-emerald-500 transition-colors flex items-center gap-2 font-bold">
-                <Mail size={20} /> Email
+              <a 
+                href={`mailto:${contact.email}`} 
+                className="w-12 h-12 flex items-center justify-center bg-neutral-900 border border-neutral-800 rounded-2xl text-neutral-400 hover:text-emerald-500 hover:border-emerald-500/50 hover:bg-emerald-500/5 transition-all shadow-lg"
+                title="Email"
+              >
+                <Mail size={22} />
               </a>
             </div>
           </div>
