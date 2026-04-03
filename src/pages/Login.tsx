@@ -10,6 +10,12 @@ export default function Login() {
   const [error, setError] = React.useState('');
   const navigate = useNavigate();
 
+  React.useEffect(() => {
+    if (localStorage.getItem('admin_auth') === 'true') {
+      navigate('/admin');
+    }
+  }, [navigate]);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     

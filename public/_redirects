@@ -1,0 +1,6 @@
+/* 
+  Netlify Redirects for Single Page Application 
+  This ensures that all routes are handled by index.html, 
+  allowing React Router to manage sub-routes correctly.
+*/
+/*  /index.html  200

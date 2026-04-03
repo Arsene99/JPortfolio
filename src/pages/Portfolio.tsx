@@ -74,7 +74,7 @@ export default function Portfolio() {
               >
                 CV
               </a>
-              <Link to="/login" className="p-2 text-neutral-400 hover:text-white transition-colors" title="Administration">
+              <Link to="/admin" className="p-2 text-neutral-400 hover:text-white transition-colors" title="Administration">
                 <Database size={20} />
               </Link>
             </div>
@@ -114,7 +114,7 @@ export default function Portfolio() {
                     {link.name}
                   </a>
                 ))}
-                <Link to="/login" className="block text-lg font-medium text-blue-400">
+                <Link to="/admin" className="block text-lg font-medium text-blue-400">
                   Admin Panel
                 </Link>
               </div>
