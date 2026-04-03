@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Trash2, LayoutDashboard, Briefcase, Database, LogOut, ArrowLeft, Menu, X, BarChart3, FileText, User, Mail, Globe, Phone, MapPin } from 'lucide-react';
+import { Plus, Trash2, LayoutDashboard, Briefcase, Database, LogOut, ArrowLeft, Menu, X, BarChart3, FileText, User, Mail, Globe, Phone, MapPin, Pencil, Save } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { usePortfolioData } from '../hooks/usePortfolioData';
 import { Project, Skill, Experience, Analysis, Profile, Contact } from '../lib/data';
@@ -13,6 +13,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = React.useState<'projects' | 'analyses' | 'skills' | 'experience' | 'profile' | 'contact'>('projects');
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
   const [saveStatus, setSaveStatus] = React.useState<string | null>(null);
+  const [editingItem, setEditingItem] = React.useState<{ type: string, id: string } | null>(null);
   const navigate = useNavigate();
 
   const showSaveConfirmation = (message: string) => {
@@ -257,46 +258,31 @@ export default function AdminDashboard() {
 
           {/* Projects Tab */}
           {activeTab === 'projects' && (
-            <div className="grid gap-6">
+            <div className="grid gap-4">
               {projects.map((project) => (
                 <motion.div 
                   layout
                   key={project.id} 
-                  className="bg-neutral-900 p-4 md:p-6 rounded-2xl border border-neutral-800 space-y-4"
+                  className="bg-neutral-900 p-5 rounded-2xl border border-neutral-800 hover:border-emerald-500/30 transition-all flex items-center justify-between group"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-xs text-neutral-500 uppercase font-bold">Titre</label>
-                      <input 
-                        value={project.title}
-                        onChange={(e) => editProject(project.id, 'title', e.target.value)}
-                        className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 focus:border-emerald-500 outline-none transition-colors"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs text-neutral-500 uppercase font-bold">Image URL</label>
-                      <input 
-                        value={project.image}
-                        onChange={(e) => editProject(project.id, 'image', e.target.value)}
-                        className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 focus:border-emerald-500 outline-none transition-colors"
-                      />
-                    </div>
+                  <div className="flex-1 min-w-0 pr-4">
+                    <h3 className="font-bold text-lg line-clamp-1">{project.title}</h3>
+                    <p className="text-neutral-500 text-sm line-clamp-1">{project.description}</p>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-xs text-neutral-500 uppercase font-bold">Description</label>
-                    <textarea 
-                      value={project.description}
-                      onChange={(e) => editProject(project.id, 'description', e.target.value)}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 focus:border-emerald-500 outline-none transition-colors"
-                      rows={3}
-                    />
-                  </div>
-                  <div className="flex justify-end">
+                  <div className="flex items-center gap-2 shrink-0">
                     <button 
-                      onClick={() => deleteProject(project.id)}
-                      className="text-red-500 hover:text-red-400 flex items-center gap-1 text-sm font-medium p-2 hover:bg-red-500/10 rounded-lg transition-colors"
+                      onClick={() => setEditingItem({ type: 'project', id: project.id })}
+                      className="p-2 text-neutral-400 hover:text-emerald-500 hover:bg-emerald-500/10 rounded-xl transition-all"
+                      title="Modifier"
                     >
-                      <Trash2 size={16} /> Supprimer
+                      <Pencil size={18} />
+                    </button>
+                    <button 
+                      onClick={() => { deleteProject(project.id); showSaveConfirmation('Projet supprimé'); }}
+                      className="p-2 text-neutral-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                      title="Supprimer"
+                    >
+                      <Trash2 size={18} />
                     </button>
                   </div>
                 </motion.div>
@@ -306,55 +292,31 @@ export default function AdminDashboard() {
 
           {/* Analyses Tab */}
           {activeTab === 'analyses' && (
-            <div className="grid gap-6">
+            <div className="grid gap-4">
               {analyses.map((analysis) => (
                 <motion.div 
                   layout
                   key={analysis.id} 
-                  className="bg-neutral-900 p-4 md:p-6 rounded-2xl border border-neutral-800 space-y-4"
+                  className="bg-neutral-900 p-5 rounded-2xl border border-neutral-800 hover:border-emerald-500/30 transition-all flex items-center justify-between group"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-xs text-neutral-500 uppercase font-bold">Titre de l'analyse</label>
-                      <input 
-                        value={analysis.title}
-                        onChange={(e) => editAnalysis(analysis.id, 'title', e.target.value)}
-                        className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 focus:border-emerald-500 outline-none transition-colors"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs text-neutral-500 uppercase font-bold">Catégorie</label>
-                      <input 
-                        value={analysis.category}
-                        onChange={(e) => editAnalysis(analysis.id, 'category', e.target.value)}
-                        className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 focus:border-emerald-500 outline-none transition-colors"
-                      />
-                    </div>
+                  <div className="flex-1 min-w-0 pr-4">
+                    <h3 className="font-bold text-lg line-clamp-1">{analysis.title}</h3>
+                    <p className="text-neutral-500 text-sm line-clamp-1">{analysis.summary}</p>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-xs text-neutral-500 uppercase font-bold">Résumé</label>
-                    <textarea 
-                      value={analysis.summary}
-                      onChange={(e) => editAnalysis(analysis.id, 'summary', e.target.value)}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 focus:border-emerald-500 outline-none transition-colors"
-                      rows={2}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-xs text-neutral-500 uppercase font-bold">Contenu (Markdown supporté)</label>
-                    <textarea 
-                      value={analysis.content}
-                      onChange={(e) => editAnalysis(analysis.id, 'content', e.target.value)}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 focus:border-emerald-500 outline-none transition-colors font-mono text-sm"
-                      rows={6}
-                    />
-                  </div>
-                  <div className="flex justify-end">
+                  <div className="flex items-center gap-2 shrink-0">
                     <button 
-                      onClick={() => deleteAnalysis(analysis.id)}
-                      className="text-red-500 hover:text-red-400 flex items-center gap-1 text-sm font-medium p-2 hover:bg-red-500/10 rounded-lg transition-colors"
+                      onClick={() => setEditingItem({ type: 'analysis', id: analysis.id })}
+                      className="p-2 text-neutral-400 hover:text-emerald-500 hover:bg-emerald-500/10 rounded-xl transition-all"
+                      title="Modifier"
                     >
-                      <Trash2 size={16} /> Supprimer
+                      <Pencil size={18} />
+                    </button>
+                    <button 
+                      onClick={() => { deleteAnalysis(analysis.id); showSaveConfirmation('Analyse supprimée'); }}
+                      className="p-2 text-neutral-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                      title="Supprimer"
+                    >
+                      <Trash2 size={18} />
                     </button>
                   </div>
                 </motion.div>
@@ -364,36 +326,37 @@ export default function AdminDashboard() {
 
           {/* Skills Tab */}
           {activeTab === 'skills' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid gap-4">
               {skills.map((skill) => (
                 <motion.div 
                   layout
                   key={skill.id} 
-                  className="bg-neutral-900 p-4 rounded-xl border border-neutral-800 flex flex-col gap-4"
+                  className="bg-neutral-900 p-5 rounded-2xl border border-neutral-800 hover:border-emerald-500/30 transition-all flex items-center justify-between group"
                 >
-                  <div className="flex justify-between items-center">
-                    <input 
-                      value={skill.name}
-                      onChange={(e) => updateSkills(skills.map(s => s.id === skill.id ? { ...s, name: e.target.value } : s))}
-                      className="bg-transparent border-none outline-none focus:text-emerald-400 font-medium"
-                    />
-                    <button onClick={() => deleteSkill(skill.id)} className="text-neutral-500 hover:text-red-500 p-2 hover:bg-red-500/10 rounded-lg transition-colors">
-                      <Trash2 size={16} />
-                    </button>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-xs text-neutral-500">
-                      <span>Niveau</span>
-                      <span>{skill.level}%</span>
+                  <div className="flex-1 min-w-0 pr-4 flex items-center gap-4">
+                    <div className="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center text-emerald-500 font-bold">
+                      {skill.level}%
                     </div>
-                    <input 
-                      type="range"
-                      min="0"
-                      max="100"
-                      value={skill.level}
-                      onChange={(e) => updateSkills(skills.map(s => s.id === skill.id ? { ...s, level: parseInt(e.target.value) } : s))}
-                      className="w-full h-1.5 bg-neutral-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
-                    />
+                    <div>
+                      <h3 className="font-bold text-lg line-clamp-1">{skill.name}</h3>
+                      <p className="text-neutral-500 text-xs uppercase tracking-widest font-bold line-clamp-1">{skill.category}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button 
+                      onClick={() => setEditingItem({ type: 'skill', id: skill.id })}
+                      className="p-2 text-neutral-400 hover:text-emerald-500 hover:bg-emerald-500/10 rounded-xl transition-all"
+                      title="Modifier"
+                    >
+                      <Pencil size={18} />
+                    </button>
+                    <button 
+                      onClick={() => { deleteSkill(skill.id); showSaveConfirmation('Compétence supprimée'); }}
+                      className="p-2 text-neutral-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                      title="Supprimer"
+                    >
+                      <Trash2 size={18} />
+                    </button>
                   </div>
                 </motion.div>
               ))}
@@ -402,43 +365,31 @@ export default function AdminDashboard() {
 
           {/* Experience Tab */}
           {activeTab === 'experience' && (
-            <div className="grid gap-6">
+            <div className="grid gap-4">
               {experiences.map((exp) => (
                 <motion.div 
                   layout
                   key={exp.id} 
-                  className="bg-neutral-900 p-4 md:p-6 rounded-2xl border border-neutral-800 space-y-4"
+                  className="bg-neutral-900 p-5 rounded-2xl border border-neutral-800 hover:border-emerald-500/30 transition-all flex items-center justify-between group"
                 >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-xs text-neutral-500 uppercase font-bold">Poste</label>
-                      <input 
-                        value={exp.role}
-                        onChange={(e) => updateExperiences(experiences.map(ex => ex.id === exp.id ? { ...ex, role: e.target.value } : ex))}
-                        className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 focus:border-emerald-500 outline-none"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs text-neutral-500 uppercase font-bold">Entreprise</label>
-                      <input 
-                        value={exp.company}
-                        onChange={(e) => updateExperiences(experiences.map(ex => ex.id === exp.id ? { ...ex, company: e.target.value } : ex))}
-                        className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 focus:border-emerald-500 outline-none"
-                      />
-                    </div>
+                  <div className="flex-1 min-w-0 pr-4">
+                    <h3 className="font-bold text-lg line-clamp-1">{exp.role}</h3>
+                    <p className="text-neutral-500 text-sm line-clamp-1">{exp.company} • {exp.period}</p>
                   </div>
-                  <div className="space-y-2">
-                    <label className="text-xs text-neutral-500 uppercase font-bold">Description</label>
-                    <textarea 
-                      value={exp.description}
-                      onChange={(e) => updateExperiences(experiences.map(ex => ex.id === exp.id ? { ...ex, description: e.target.value } : ex))}
-                      className="w-full bg-neutral-950 border border-neutral-800 rounded-lg px-3 py-2 focus:border-emerald-500 outline-none"
-                      rows={2}
-                    />
-                  </div>
-                  <div className="flex justify-end">
-                    <button onClick={() => deleteExperience(exp.id)} className="text-red-500 hover:text-red-400 p-2 hover:bg-red-500/10 rounded-lg transition-colors">
-                      <Trash2 size={16} />
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button 
+                      onClick={() => setEditingItem({ type: 'experience', id: exp.id })}
+                      className="p-2 text-neutral-400 hover:text-emerald-500 hover:bg-emerald-500/10 rounded-xl transition-all"
+                      title="Modifier"
+                    >
+                      <Pencil size={18} />
+                    </button>
+                    <button 
+                      onClick={() => { deleteExperience(exp.id); showSaveConfirmation('Expérience supprimée'); }}
+                      className="p-2 text-neutral-400 hover:text-red-500 hover:bg-red-500/10 rounded-xl transition-all"
+                      title="Supprimer"
+                    >
+                      <Trash2 size={18} />
                     </button>
                   </div>
                 </motion.div>
@@ -570,6 +521,222 @@ export default function AdminDashboard() {
           )}
         </div>
       </main>
+
+      {/* Edit Modal */}
+      <AnimatePresence>
+        {editingItem && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setEditingItem(null)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-2xl bg-neutral-900 border border-neutral-800 rounded-[32px] shadow-2xl overflow-hidden"
+            >
+              <div className="p-6 border-b border-neutral-800 flex items-center justify-between bg-neutral-900/50 backdrop-blur-md sticky top-0 z-10">
+                <h3 className="text-xl font-bold">Modifier l'élément</h3>
+                <button 
+                  onClick={() => setEditingItem(null)}
+                  className="p-2 text-neutral-400 hover:text-white hover:bg-neutral-800 rounded-xl transition-all"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div className="p-6 md:p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                {editingItem.type === 'project' && (
+                  <div className="space-y-6">
+                    {projects.filter(p => p.id === editingItem.id).map(project => (
+                      <div key={project.id} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Titre</label>
+                            <input 
+                              value={project.title}
+                              onChange={(e) => editProject(project.id, 'title', e.target.value)}
+                              className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-3 focus:border-emerald-500 outline-none transition-all"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Image URL</label>
+                            <input 
+                              value={project.image}
+                              onChange={(e) => editProject(project.id, 'image', e.target.value)}
+                              className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-3 focus:border-emerald-500 outline-none transition-all"
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Description</label>
+                          <textarea 
+                            value={project.description}
+                            onChange={(e) => editProject(project.id, 'description', e.target.value)}
+                            className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-3 focus:border-emerald-500 outline-none transition-all resize-none"
+                            rows={4}
+                          />
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Lien Étude</label>
+                            <input 
+                              value={project.link}
+                              onChange={(e) => editProject(project.id, 'link', e.target.value)}
+                              className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-3 focus:border-emerald-500 outline-none transition-all"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Lien Données</label>
+                            <input 
+                              value={project.dataUrl}
+                              onChange={(e) => editProject(project.id, 'dataUrl', e.target.value)}
+                              className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-3 focus:border-emerald-500 outline-none transition-all"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {editingItem.type === 'analysis' && (
+                  <div className="space-y-6">
+                    {analyses.filter(a => a.id === editingItem.id).map(analysis => (
+                      <div key={analysis.id} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Titre</label>
+                            <input 
+                              value={analysis.title}
+                              onChange={(e) => editAnalysis(analysis.id, 'title', e.target.value)}
+                              className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-3 focus:border-emerald-500 outline-none transition-all"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Catégorie</label>
+                            <input 
+                              value={analysis.category}
+                              onChange={(e) => editAnalysis(analysis.id, 'category', e.target.value)}
+                              className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-3 focus:border-emerald-500 outline-none transition-all"
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Résumé</label>
+                          <textarea 
+                            value={analysis.summary}
+                            onChange={(e) => editAnalysis(analysis.id, 'summary', e.target.value)}
+                            className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-3 focus:border-emerald-500 outline-none transition-all resize-none"
+                            rows={3}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Contenu (Markdown)</label>
+                          <textarea 
+                            value={analysis.content}
+                            onChange={(e) => editAnalysis(analysis.id, 'content', e.target.value)}
+                            className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-3 focus:border-emerald-500 outline-none transition-all font-mono text-sm"
+                            rows={8}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {editingItem.type === 'skill' && (
+                  <div className="space-y-6">
+                    {skills.filter(s => s.id === editingItem.id).map(skill => (
+                      <div key={skill.id} className="space-y-6">
+                        <div className="space-y-2">
+                          <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Nom du Logiciel</label>
+                          <input 
+                            value={skill.name}
+                            onChange={(e) => updateSkills(skills.map(s => s.id === skill.id ? { ...s, name: e.target.value } : s))}
+                            className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-3 focus:border-emerald-500 outline-none transition-all"
+                          />
+                        </div>
+                        <div className="space-y-4">
+                          <div className="flex justify-between items-end">
+                            <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Niveau de Maîtrise</label>
+                            <span className="text-emerald-500 font-black">{skill.level}%</span>
+                          </div>
+                          <input 
+                            type="range"
+                            min="0"
+                            max="100"
+                            value={skill.level}
+                            onChange={(e) => updateSkills(skills.map(s => s.id === skill.id ? { ...s, level: parseInt(e.target.value) } : s))}
+                            className="w-full h-2 bg-neutral-950 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {editingItem.type === 'experience' && (
+                  <div className="space-y-6">
+                    {experiences.filter(e => e.id === editingItem.id).map(exp => (
+                      <div key={exp.id} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Poste</label>
+                            <input 
+                              value={exp.role}
+                              onChange={(e) => updateExperiences(experiences.map(ex => ex.id === exp.id ? { ...ex, role: e.target.value } : ex))}
+                              className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-3 focus:border-emerald-500 outline-none transition-all"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Entreprise</label>
+                            <input 
+                              value={exp.company}
+                              onChange={(e) => updateExperiences(experiences.map(ex => ex.id === exp.id ? { ...ex, company: e.target.value } : ex))}
+                              className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-3 focus:border-emerald-500 outline-none transition-all"
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Période</label>
+                          <input 
+                            value={exp.period}
+                            onChange={(e) => updateExperiences(experiences.map(ex => ex.id === exp.id ? { ...ex, period: e.target.value } : ex))}
+                            className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-3 focus:border-emerald-500 outline-none transition-all"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label className="text-[10px] text-neutral-500 uppercase font-black tracking-widest ml-1">Description</label>
+                          <textarea 
+                            value={exp.description}
+                            onChange={(e) => updateExperiences(experiences.map(ex => ex.id === exp.id ? { ...ex, description: e.target.value } : ex))}
+                            className="w-full bg-neutral-950 border border-neutral-800 rounded-2xl px-5 py-3 focus:border-emerald-500 outline-none transition-all resize-none"
+                            rows={4}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div className="p-6 bg-neutral-900 border-t border-neutral-800">
+                <button 
+                  onClick={() => { setEditingItem(null); showSaveConfirmation('Modifications enregistrées'); }}
+                  className="w-full py-4 bg-emerald-500 text-neutral-950 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-emerald-400 transition-all"
+                >
+                  <Save size={20} /> Terminer l'édition
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
