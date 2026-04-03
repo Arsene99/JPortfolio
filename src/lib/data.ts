@@ -23,6 +23,56 @@ export interface Experience {
   description: string;
 }
 
+export interface Analysis {
+  id: string;
+  title: string;
+  summary: string;
+  content: string;
+  date: string;
+  category: string;
+}
+
+export interface Profile {
+  name: string;
+  title: string;
+  about: string;
+  avatar: string;
+}
+
+export interface Contact {
+  email: string;
+  phone: string;
+  linkedin: string;
+  github: string;
+  address: string;
+}
+
+export const INITIAL_ANALYSES: Analysis[] = [
+  {
+    id: '1',
+    title: 'Impact de l\'inflation sur le panier de la ménagère',
+    summary: 'Une analyse économétrique des prix des produits de première nécessité au Bénin en 2023.',
+    content: 'Le contenu détaillé de l\'analyse statistique...',
+    date: 'Mars 2024',
+    category: 'Économie'
+  }
+];
+
+export const INITIAL_PROFILE: Profile = {
+  name: 'Jean Paul',
+  title: 'Étudiant en Statistique & Planification',
+  about: 'Passionné par l\'analyse de données et la modélisation statistique, je m\'efforce de transformer des données complexes en informations exploitables pour la prise de décision stratégique.',
+  avatar: 'https://picsum.photos/seed/jeanpaul/400/400'
+};
+
+export const INITIAL_CONTACT: Contact = {
+  email: 'yabiarsene031@gmail.com',
+  phone: '+229 00 00 00 00',
+  linkedin: 'https://linkedin.com/in/jeanpaul',
+  github: 'https://github.com/jeanpaul',
+  address: 'Parakou, Bénin'
+};
+
 export const INITIAL_PROJECTS: Project[] = [
   {
     id: '1',

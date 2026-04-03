@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, Linkedin, Mail, ExternalLink, Database, Briefcase, Send, ChevronDown, BarChart3, PieChart as PieChartIcon, TrendingUp } from 'lucide-react';
+import { Menu, X, Linkedin, Mail, ExternalLink, Database, Briefcase, Send, ChevronDown, BarChart3, PieChart as PieChartIcon, TrendingUp, MapPin, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell } from 'recharts';
 import { usePortfolioData } from '../hooks/usePortfolioData';
@@ -25,7 +25,7 @@ const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'];
 
 export default function Portfolio() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const { projects, skills, experiences } = usePortfolioData();
+  const { projects, skills, experiences, analyses, profile, contact } = usePortfolioData();
 
   const navLinks = [
     { name: 'À propos', href: '#about' },
@@ -34,6 +34,25 @@ export default function Portfolio() {
     { name: 'Analyses', href: '#analyses' },
     { name: 'Contact', href: '#contact' },
   ];
+
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const id = href.replace('#', '');
+    const element = document.getElementById(id);
+    if (element) {
+      const offset = 80; // Hauteur du header
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+      setIsMenuOpen(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100 font-sans selection:bg-emerald-500/30 overflow-x-hidden">
@@ -52,9 +71,9 @@ export default function Portfolio() {
               className="flex items-center gap-2"
             >
               <div className="w-10 h-10 bg-emerald-500 rounded-lg flex items-center justify-center font-bold text-neutral-950">
-                JP
+                {profile.name.split(' ').map(n => n[0]).join('')}
               </div>
-              <span className="text-xl font-bold tracking-tight">Jean Paul</span>
+              <span className="text-xl font-bold tracking-tight">{profile.name}</span>
             </motion.div>
 
             {/* Desktop Nav */}
@@ -63,7 +82,8 @@ export default function Portfolio() {
                 <a
                   key={link.name}
                   href={link.href}
-                  className="text-sm font-medium text-neutral-400 hover:text-emerald-400 transition-colors"
+                  onClick={(e) => scrollToSection(e, link.href)}
+                  className="text-sm font-medium text-neutral-400 hover:text-emerald-400 transition-colors cursor-pointer"
                 >
                   {link.name}
                 </a>
@@ -108,14 +128,14 @@ export default function Portfolio() {
                   <a
                     key={link.name}
                     href={link.href}
-                    onClick={() => setIsMenuOpen(false)}
-                    className="block text-lg font-medium text-neutral-400 hover:text-emerald-400"
+                    onClick={(e) => scrollToSection(e, link.href)}
+                    className="block text-lg font-medium text-neutral-400 hover:text-emerald-400 cursor-pointer"
                   >
                     {link.name}
                   </a>
                 ))}
                 <Link to="/admin" className="block text-lg font-medium text-blue-400">
-                  Admin Panel
+                  Panel Admin
                 </Link>
               </div>
             </motion.div>
@@ -136,9 +156,7 @@ export default function Portfolio() {
               au service du <span className="text-emerald-500">Développement</span>.
             </h1>
             <p className="text-lg md:text-xl text-neutral-400 max-w-3xl mx-auto mb-10 leading-relaxed">
-              Étudiant à l'École Nationale de Statistiques et de Planification (ENSPD) 
-              de l'Université de Parakou. Passionné par l'analyse de données 
-              et la planification stratégique.
+              {profile.about}
             </p>
             <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
               <button 
@@ -148,10 +166,10 @@ export default function Portfolio() {
                 Voir mes travaux <ChevronDown size={18} className="group-hover:translate-y-1 transition-transform" />
               </button>
               <div className="flex gap-3">
-                <a href="#" className="p-3 bg-neutral-900 border border-neutral-800 rounded-xl hover:border-emerald-500/50 transition-all text-neutral-400 hover:text-emerald-400" title="Données">
+                <a href={contact.github} target="_blank" rel="noopener noreferrer" className="p-3 bg-neutral-900 border border-neutral-800 rounded-xl hover:border-emerald-500/50 transition-all text-neutral-400 hover:text-emerald-400" title="Données">
                   <Database size={20} />
                 </a>
-                <a href="#" className="p-3 bg-neutral-900 border border-neutral-800 rounded-xl hover:border-emerald-500/50 transition-all text-neutral-400 hover:text-emerald-400" title="LinkedIn">
+                <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="p-3 bg-neutral-900 border border-neutral-800 rounded-xl hover:border-emerald-500/50 transition-all text-neutral-400 hover:text-emerald-400" title="LinkedIn">
                   <Linkedin size={20} />
                 </a>
               </div>
@@ -166,8 +184,8 @@ export default function Portfolio() {
             className="mt-16 max-w-4xl mx-auto relative rounded-3xl overflow-hidden border border-neutral-800 shadow-2xl shadow-emerald-500/10"
           >
             <img 
-              src="https://picsum.photos/seed/data-viz/1200/600?grayscale" 
-              alt="Data Visualization Concept"
+              src={profile.avatar} 
+              alt={profile.name}
               referrerPolicy="no-referrer"
               className="w-full h-auto opacity-60"
             />
@@ -178,7 +196,7 @@ export default function Portfolio() {
               </div>
               <div className="text-left">
                 <div className="text-xs text-neutral-500 font-bold uppercase tracking-wider">Expertise</div>
-                <div className="font-bold">Statistique & Analyse</div>
+                <div className="font-bold">{profile.title}</div>
               </div>
             </div>
           </motion.div>
@@ -235,14 +253,14 @@ export default function Portfolio() {
       <section id="analyses" className="py-20 px-4 bg-neutral-900/30">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold mb-4">Analyses de Données</h2>
+            <h2 className="text-3xl md:text-5xl font-bold mb-4">Analyses Statistiques</h2>
             <div className="flex flex-col items-center gap-2">
-              <span className="text-emerald-500 font-bold uppercase tracking-widest text-xs">Visualisation</span>
+              <span className="text-emerald-500 font-bold uppercase tracking-widest text-xs">Études & Rapports</span>
               <div className="w-12 h-1 bg-emerald-500 rounded-full"></div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
             {/* Area Chart */}
             <div className="bg-neutral-900 p-6 md:p-8 rounded-3xl border border-neutral-800">
               <h3 className="text-xl font-bold mb-8">Volume d'Enquêtes & Précision</h3>
@@ -284,16 +302,6 @@ export default function Portfolio() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
-              <div className="mt-6 flex gap-6 text-sm text-neutral-500">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-emerald-500"></div>
-                  <span>Enquêtes</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-amber-500"></div>
-                  <span>Précision</span>
-                </div>
-              </div>
             </div>
 
             {/* Pie Chart */}
@@ -321,15 +329,31 @@ export default function Portfolio() {
                   </PieChart>
                 </ResponsiveContainer>
               </div>
-              <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
-                {pieData.map((item, index) => (
-                  <div key={item.name} className="flex items-center gap-2">
-                    <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[index] }}></div>
-                    <span className="text-neutral-400">{item.name}</span>
-                  </div>
-                ))}
-              </div>
             </div>
+          </div>
+
+          {/* Dynamic Analyses List */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {analyses.map((analysis) => (
+              <motion.div 
+                key={analysis.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                className="p-6 bg-neutral-900 rounded-2xl border border-neutral-800 hover:border-emerald-500/30 transition-all"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <span className="px-3 py-1 bg-emerald-500/10 text-emerald-500 text-[10px] font-black uppercase tracking-widest rounded-full border border-emerald-500/20">
+                    {analysis.category}
+                  </span>
+                  <span className="text-xs text-neutral-500">{analysis.date}</span>
+                </div>
+                <h3 className="text-xl font-bold mb-2">{analysis.title}</h3>
+                <p className="text-neutral-400 text-sm mb-4 leading-relaxed">{analysis.summary}</p>
+                <button className="text-emerald-500 text-sm font-bold flex items-center gap-2 hover:gap-3 transition-all">
+                  Lire l'analyse complète <ExternalLink size={14} />
+                </button>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -471,32 +495,32 @@ export default function Portfolio() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-12">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center font-bold text-neutral-950 text-xl">
-                JP
+                {profile.name.split(' ').map(n => n[0]).join('')}
               </div>
               <div>
-                <div className="font-bold text-xl">Jean Paul</div>
-                <div className="text-xs text-neutral-500 font-bold uppercase tracking-widest">Statisticien & Planificateur</div>
+                <div className="font-bold text-xl">{profile.name}</div>
+                <div className="text-xs text-neutral-500 font-bold uppercase tracking-widest">{profile.title}</div>
               </div>
             </div>
             
             <div className="flex gap-8">
-              <a href="#" className="text-neutral-400 hover:text-emerald-500 transition-colors flex items-center gap-2 font-bold">
+              <a href={contact.github} target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-emerald-500 transition-colors flex items-center gap-2 font-bold">
                 <Database size={20} /> Données
               </a>
-              <a href="#" className="text-neutral-400 hover:text-emerald-500 transition-colors flex items-center gap-2 font-bold">
+              <a href={contact.linkedin} target="_blank" rel="noopener noreferrer" className="text-neutral-400 hover:text-emerald-500 transition-colors flex items-center gap-2 font-bold">
                 <Linkedin size={20} /> LinkedIn
               </a>
-              <a href="#" className="text-neutral-400 hover:text-emerald-500 transition-colors flex items-center gap-2 font-bold">
+              <a href={`mailto:${contact.email}`} className="text-neutral-400 hover:text-emerald-500 transition-colors flex items-center gap-2 font-bold">
                 <Mail size={20} /> Email
               </a>
             </div>
           </div>
           
           <div className="mt-20 pt-8 border-t border-neutral-900 flex flex-col md:flex-row justify-between items-center gap-4 text-neutral-600 text-sm font-medium">
-            <div>© {new Date().getFullYear()} Jean Paul. Tous droits réservés.</div>
+            <div>© {new Date().getFullYear()} {profile.name}. Tous droits réservés.</div>
             <div className="flex gap-6">
-              <a href="#" className="hover:text-neutral-400 transition-colors">Confidentialité</a>
-              <a href="#" className="hover:text-neutral-400 transition-colors">Mentions Légales</a>
+              <span className="text-neutral-500 flex items-center gap-1"><MapPin size={14} /> {contact.address}</span>
+              <span className="text-neutral-500 flex items-center gap-1"><Phone size={14} /> {contact.phone}</span>
             </div>
           </div>
         </div>
