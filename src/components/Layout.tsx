@@ -16,7 +16,6 @@ export default function Layout({ children }: LayoutProps) {
   const navLinks = [
     { name: 'À propos', href: '/' },
     { name: 'Projets', href: '/projets' },
-    { name: 'Compétences', href: '/competences' },
     { name: 'Analyses', href: '/analyses' },
     { name: 'Contact', href: '/contact' },
   ];
@@ -102,9 +101,6 @@ export default function Layout({ children }: LayoutProps) {
               >
                 CV
               </a>
-              <Link to="/admin" className="p-2 text-neutral-400 hover:text-white transition-colors" title="Administration">
-                <Database size={20} />
-              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -144,9 +140,6 @@ export default function Layout({ children }: LayoutProps) {
                     {link.name}
                   </Link>
                 ))}
-                <Link to="/admin" className="block text-lg font-medium text-blue-400">
-                  Panel Admin
-                </Link>
               </div>
             </motion.div>
           )}

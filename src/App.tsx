@@ -6,7 +6,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import About from './pages/About';
 import Projects from './pages/Projects';
-import Skills from './pages/Skills';
 import Analyses from './pages/Analyses';
 import Contact from './pages/Contact';
 import AdminDashboard from './pages/AdminDashboard';
@@ -19,7 +18,6 @@ export default function App() {
       <Routes>
         <Route path="/" element={<About />} />
         <Route path="/projets" element={<Projects />} />
-        <Route path="/competences" element={<Skills />} />
         <Route path="/analyses" element={<Analyses />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/login" element={<Login />} />

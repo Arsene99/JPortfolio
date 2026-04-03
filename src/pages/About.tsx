@@ -1,12 +1,12 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { ChevronDown, BarChart3, Database, Facebook, MessageCircle, Briefcase } from 'lucide-react';
+import { ChevronDown, BarChart3, Database, Facebook, MessageCircle, Briefcase, Cpu } from 'lucide-react';
 import { usePortfolioData } from '../hooks/usePortfolioData';
 import Layout from '../components/Layout';
 import { Link } from 'react-router-dom';
 
 export default function About() {
-  const { profile, contact, experiences } = usePortfolioData();
+  const { profile, contact, experiences, skills } = usePortfolioData();
 
   return (
     <Layout>
@@ -133,6 +133,85 @@ export default function About() {
               </div>
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Skills Section */}
+      <section className="py-24 px-4 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="flex items-center gap-4 mb-16">
+            <div className="w-12 h-12 bg-emerald-500 rounded-2xl flex items-center justify-center text-neutral-950">
+              <Cpu size={24} />
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold">Expertise Logicielle</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
+            {skills.map((skill, index) => (
+              <motion.div 
+                key={skill.id} 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="space-y-4"
+              >
+                <div className="flex justify-between items-end">
+                  <span className="text-sm md:text-lg font-bold tracking-tight">{skill.name}</span>
+                  <span className="text-emerald-500 font-mono font-bold text-xs md:text-sm">{skill.level}%</span>
+                </div>
+                <div className="h-2 md:h-3 bg-neutral-900 rounded-full overflow-hidden border border-neutral-800 relative group">
+                  {/* Liquid Progress Bar */}
+                  <motion.div 
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${skill.level}%` }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 1.5, ease: "circOut" }}
+                    className="h-full bg-emerald-500 rounded-full relative overflow-hidden shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+                  >
+                    {/* Liquid Wave Effect */}
+                    <motion.div 
+                      animate={{ 
+                        x: ["-100%", "100%"],
+                      }}
+                      transition={{ 
+                        duration: 3, 
+                        repeat: Infinity, 
+                        ease: "linear" 
+                      }}
+                      className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"
+                    />
+                    
+                    {/* Secondary Wave for more "liquid" feel */}
+                    <motion.div 
+                      animate={{ 
+                        x: ["100%", "-100%"],
+                      }}
+                      transition={{ 
+                        duration: 5, 
+                        repeat: Infinity, 
+                        ease: "linear" 
+                      }}
+                      className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-emerald-300/20 to-transparent -skew-x-12"
+                    />
+                  </motion.div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="p-10 bg-neutral-900/50 backdrop-blur-sm rounded-[32px] border border-neutral-800 hover:border-emerald-500/30 transition-all group">
+              <div className="text-5xl font-black text-emerald-500 mb-3 group-hover:scale-110 transition-transform origin-left">15+</div>
+              <div className="text-neutral-400 font-bold uppercase tracking-widest text-xs">Projets Réalisés</div>
+            </div>
+            <div className="p-10 bg-neutral-900/50 backdrop-blur-sm rounded-[32px] border border-neutral-800 hover:border-emerald-500/30 transition-all flex items-center justify-center group">
+               <BarChart3 size={56} className="text-emerald-500 opacity-30 group-hover:opacity-100 group-hover:scale-110 transition-all" />
+            </div>
+            <div className="p-10 bg-emerald-500 rounded-[32px] border border-emerald-400 flex flex-col justify-center shadow-xl shadow-emerald-500/10">
+              <div className="text-neutral-950 font-black text-2xl leading-tight">Prêt pour de nouveaux défis statistiques.</div>
+            </div>
+          </div>
         </div>
       </section>
 
